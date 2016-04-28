@@ -9,6 +9,8 @@
 #
 # $ vagrant plugin install vagrant-bindfs
 
+raise "set $WORKSPACE" unless ENV['WORKSPACE']
+
 VAGRANTFILE_API_VERSION = "2"
 
 # Change these to suite your needs / machine
