@@ -1,24 +1,18 @@
 ---
 - name: Register Docker APT Key
-  apt_key: keyserver=keyserver.ubuntu.com id=36A1D7869245C8950F966E92D8576A8BA88D21E9
+  apt_key: keyserver="hkp://p80.pool.sks-keyservers.net:80" id=58118E89F3A912897C070ADBF76221572C52609D
 
 - name: Register Docker Repository
-  apt_repository: repo='deb https://get.docker.com/ubuntu docker main' state=present update_cache=yes
+  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present update_cache=yes
 
 - name: Install Docker
-  apt: name=lxc-docker state=present
+  apt: name=docker-engine state=present
 
 - name: Register Vagrant User in Docker Group
   command: usermod -a -G docker vagrant
 
-- name: Register dockerd Service
-  template: src=../templates/dockerd.j2 dest=/etc/init.d/dockerd owner=root group=root mode="0755"
-
-- name: Disable docker Service
-  template: src=../templates/docker.override.j2 dest=/etc/init/docker.override owner=root group=root
+- name: Register docker default
+  template: src=../templates/docker_default dest=/etc/default/docker owner=root group=root mode="0755"
 
 - name: Enable dockerd Service
-  command: sudo update-rc.d dockerd defaults
-  notify:
-  - Stop Docker
-  - Restart Docker Daemon
+  service: name=docker state=started

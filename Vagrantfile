@@ -1,3 +1,4 @@
+# coding: utf-8
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -25,8 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.cpus   = CPUS
       v.memory = MEMORY
     end
-
-    config.vm.provider :parallels do |v, |
+    config.vm.provider :parallels do |v, override|
         override.vm.box = "parallels/ubuntu-14.04"
         v.update_guest_tools = true
         v.optimize_power_consumption = false
@@ -40,10 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     node.nfs.map_uid = Process.uid
     node.nfs.map_gid = Process.gid
 
-    node.vm.synced_folder "/Users", "/Users.tmp", type: "nfs"
-    node.bindfs.bind_folder "/Users.tmp", "/Users",
-      create_as_user: true,
-      perms: "u=u:g=g:o=o"
+    node.vm.synced_folder "/Users", "/Users", type: "nfs"
 
     node.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/ansible/container_host.yml"
