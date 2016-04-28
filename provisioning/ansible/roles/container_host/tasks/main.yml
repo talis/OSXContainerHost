@@ -13,6 +13,8 @@
 
 - name: Register docker default
   template: src=../templates/docker_default dest=/etc/default/docker owner=root group=root mode="0755"
+  notify:
+    - Restart Docker Daemon
 
 - name: Enable dockerd Service
   service: name=docker state=started
