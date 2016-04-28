@@ -26,21 +26,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.cpus   = CPUS
       v.memory = MEMORY
     end
-    config.vm.provider :parallels do |v, override|
-        override.vm.box = "parallels/ubuntu-14.04"
-        v.update_guest_tools = true
-        v.optimize_power_consumption = false
-        v.customize ["set", :id, "--cpus", CPUS]
-        v.customize ["set", :id, "--memsize", MEMORY]
-        v.customize ["set", :id, "--videosize", "256"]
-    end
-
     node.vm.network "private_network", ip: "192.168.200.2"
 
     node.nfs.map_uid = Process.uid
     node.nfs.map_gid = Process.gid
 
-    node.vm.synced_folder "/Users", "/Users", type: "nfs"
+    node.vm.synced_folder ENV["WORKSPACE"], "/workspace", type: "nfs"
 
     node.vm.provision "ansible" do |ansible|
       ansible.playbook = "provisioning/ansible/container_host.yml"
